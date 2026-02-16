@@ -1,43 +1,20 @@
-import { useEffect, useState } from 'react';
-import MovieCard from './assets/components/MovieCard';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import Header from './assets/components/Header';
+import Profile from './assets/components/Profile';
+import FilmDetails from './assets/pages/FilmDetails';
+import Home from './assets/pages/Home';
 
 function App() {
-  const [filmes, setFilmes] = useState([]);
-
-  const URL = `https://api.themoviedb.org/3/movie/popular?api_key=${import.meta.env.VITE_KEY_MOVIES}`;
-
-  useEffect(() => {
-    const buscarFilmes = async () => {
-      try {
-        const response = await fetch(URL);
-
-        if (!response.ok) {
-          throw new Error('Erro ao buscar filmes');
-        }
-
-        const data = await response.json();
-        setFilmes(data.results);
-      } catch (error) {
-        console.error('Erro na API:', error);
-      }
-    };
-
-    buscarFilmes();
-  }, []);
-
   return (
     <div>
-      <h1>Lista de filmes</h1>
-      <ul className="flex gap-2 flex-wrap ">
-        {filmes.map((filme) => (
-          <MovieCard
-            key={filme.id}
-            title={filme.original_title}
-            description={filme.overview}
-            poster={filme.poster_path}
-          />
-        ))}
-      </ul>
+      <BrowserRouter>
+        <Header />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/filme/:id" element={<FilmDetails />} />
+          <Route path="/profile" element={<Profile />} />
+        </Routes>
+      </BrowserRouter>
     </div>
   );
 }

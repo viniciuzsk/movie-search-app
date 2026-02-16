@@ -1,0 +1,47 @@
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import MovieCard from '../components/MovieCard';
+
+const Home = () => {
+  const [filmes, setFilmes] = useState([]);
+
+  const URL = `https://api.themoviedb.org/3/movie/popular?api_key=${import.meta.env.VITE_KEY_MOVIES}`;
+
+  useEffect(() => {
+    const buscarFilmes = async () => {
+      try {
+        const response = await fetch(URL);
+        if (!response.ok) {
+          throw new Error('Erro ao buscar filmes');
+        }
+
+        const data = await response.json();
+        console.log(data);
+        setFilmes(data.results);
+      } catch (error) {
+        console.error('Erro na API:', error);
+      }
+    };
+
+    buscarFilmes();
+  }, []);
+  return (
+    <div>
+      <h1>Lista de filmes</h1>
+      <ul className="flex gap-2 flex-wrap ">
+        {filmes.map((filme) => (
+          <Link to={`/filme/${filme.id}`}>
+            <MovieCard
+              key={filme.id}
+              title={filme.original_title}
+              description={filme.overview}
+              poster={filme.poster_path}
+            />
+          </Link>
+        ))}
+      </ul>
+    </div>
+  );
+};
+
+export default Home;
